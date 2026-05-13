@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 Grocery List · Heart-Healthy Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap');
+  :root {
+    --green:#2d6a4f;
+    --gl:#52b788;
+    --gold:#e9c46a;
+    --cream:#fefae0;
+    --dark:#162018;
+    --card:#1e2e20;
+    --red:#e76f51;
+    --soft:rgba(255,255,255,0.06);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:var(--dark);
+    color:#fff;
+    min-height:100vh;
+    padding:28px 32px;
+    line-height:1.5;
+  }
+  .container{max-width:1400px;margin:0 auto;}
+
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding-bottom:20px;
+    margin-bottom:24px;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .title-block h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.2rem;
+    font-weight:900;
+    color:var(--cream);
+    line-height:1.1;
+  }
+  .tagline{
+    font-size:0.9rem;
+    color:rgba(255,255,255,0.5);
+    margin-top:6px;
+  }
+  .nav-links{display:flex;gap:10px;}
+  .nav-links a{
+    font-weight:700;
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    color:rgba(255,255,255,0.7);
+    text-decoration:none;
+    padding:8px 14px;
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:6px;
+    transition:all 0.2s;
+  }
+  .nav-links a:hover{color:var(--gl);border-color:var(--gl);}
+  .nav-links a.active{background:var(--gl);color:var(--dark);border-color:var(--gl);}
+
+  .stats{
+    display:flex;
+    gap:32px;
+    margin-bottom:24px;
+    padding:16px 22px;
+    background:rgba(82,183,136,0.08);
+    border:1px solid rgba(82,183,136,0.18);
+    border-radius:12px;
+    flex-wrap:wrap;
+  }
+  .stat{display:flex;flex-direction:column;gap:2px;}
+  .stat-value{
+    font-family:'Playfair Display',serif;
+    font-weight:900;
+    font-size:1.8rem;
+    color:var(--cream);
+    line-height:1;
+  }
+  .stat-label{
+    font-size:0.65rem;
+    text-transform:uppercase;
+    letter-spacing:1.1px;
+    color:rgba(255,255,255,0.45);
+    font-weight:700;
+    margin-top:4px;
+  }
+  .progress-wrapper{flex:1;min-width:200px;display:flex;flex-direction:column;justify-content:center;gap:6px;}
+  .progress-bar{
+    height:6px;
+    background:rgba(255,255,255,0.08);
+    border-radius:3px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--gl),var(--gold));
+    border-radius:3px;
+    transition:width 0.3s;
+  }
+  .progress-text{
+    font-size:0.7rem;
+    color:rgba(255,255,255,0.5);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+
+  .inventory-note{
+    background:rgba(233,196,106,0.08);
+    border-left:3px solid var(--gold);
+    padding:12px 18px;
+    margin-bottom:24px;
+    border-radius:6px;
+    font-size:0.85rem;
+    color:rgba(255,255,255,0.8);
+  }
+  .inventory-note strong{color:var(--gold);}
+
+  .controls{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .action-buttons{display:flex;gap:8px;}
+  .btn{
+    font-family:'Nunito',sans-serif;
+    font-size:0.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    padding:8px 14px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:transparent;
+    color:rgba(255,255,255,0.8);
+    border-radius:6px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .btn:hover{background:var(--gl);color:var(--dark);border-color:var(--gl);}
+  .btn.copy{background:var(--gl);color:var(--dark);border-color:var(--gl);}
+  .btn.copy:hover{background:var(--gold);border-color:var(--gold);}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+  .category{
+    background:var(--card);
+    border:1px solid var(--soft);
+    border-radius:14px;
+    overflow:hidden;
+  }
+  .category-header{
+    background:rgba(82,183,136,0.12);
+    padding:14px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(82,183,136,0.15);
+  }
+  .category-header h2{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--gl);
+  }
+  .category-count{
+    font-family:'Nunito',sans-serif;
+    font-size:0.65rem;
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    background:rgba(82,183,136,0.2);
+    color:var(--gl);
+    padding:3px 9px;
+    border-radius:4px;
+  }
+  .items{padding:8px;}
+  .item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:9px 12px;
+    border-radius:6px;
+    transition:background 0.15s;
+    cursor:pointer;
+  }
+  .item:hover{background:rgba(255,255,255,0.03);}
+  .item input[type="checkbox"]{
+    appearance:none;
+    -webkit-appearance:none;
+    width:18px;
+    height:18px;
+    border:1.5px solid rgba(255,255,255,0.3);
+    border-radius:4px;
+    cursor:pointer;
+    position:relative;
+    flex-shrink:0;
+    background:transparent;
+    transition:all 0.15s;
+    margin-top:1px;
+  }
+  .item input[type="checkbox"]:checked{
+    background:var(--gl);
+    border-color:var(--gl);
+  }
+  .item input[type="checkbox"]:checked::after{
+    content:'✓';
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:var(--dark);
+    font-size:13px;
+    font-weight:900;
+  }
+  .item-content{flex:1;line-height:1.35;}
+  .item-name{
+    font-size:0.88rem;
+    font-weight:600;
+    color:rgba(255,255,255,0.92);
+  }
+  .item-detail{
+    font-size:0.72rem;
+    color:rgba(255,255,255,0.45);
+    margin-top:2px;
+  }
+  .item.checked .item-name{
+    text-decoration:line-through;
+    color:rgba(255,255,255,0.4);
+  }
+  .item.checked .item-detail{opacity:0.4;}
+  .item.optional .item-name::after{
+    content:'OPTIONAL';
+    display:inline-block;
+    font-size:0.55rem;
+    font-weight:800;
+    background:rgba(233,196,106,0.18);
+    color:var(--gold);
+    padding:1px 6px;
+    border-radius:3px;
+    margin-left:8px;
+    letter-spacing:0.5px;
+    vertical-align:middle;
+  }
+
+  .footer-note{
+    margin-top:32px;
+    padding:18px 24px;
+    background:rgba(82,183,136,0.06);
+    border:1px solid rgba(82,183,136,0.15);
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .footer-note p{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:0.9rem;
+    color:rgba(255,255,255,0.7);
+  }
+  .footer-note .updated{
+    font-family:'Nunito',sans-serif;
+    font-style:normal;
+    font-size:0.65rem;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    color:var(--gold);
+    font-weight:700;
+  }
+
+  .toast{
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:var(--gl);
+    color:var(--dark);
+    padding:12px 24px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:0.85rem;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3);
+    transition:transform 0.3s;
+    z-index:1000;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:1180px){
+    body{padding:24px;}
+    .grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:720px){
+    .grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="title-block">
+      <h1>Week 1 Grocery List</h1>
+      <p class="tagline">Full week (Mon–Sun) · cross-referenced against the kitchen</p>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html">Meal Plan</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="grocery-list.html" class="active">Grocery List</a>
+    </nav>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-value" id="total-count">0</span>
+      <span class="stat-label">Total Items</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="bought-count">0</span>
+      <span class="stat-label">In Cart</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="remaining-count">0</span>
+      <span class="stat-label">Remaining</span>
+    </div>
+    <div class="progress-wrapper">
+      <div class="progress-text" id="progress-text">0% complete</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="inventory-note">
+    <strong>Already in your kitchen:</strong> olive oil, sesame oil, eggs, milk, soy sauce, jar minced garlic, kalamata olives, plus all major spices (paprika, garlic powder, cinnamon, cumin, oregano, dried thyme via Italian seasoning, parsley flakes, turmeric, red pepper flakes). These are excluded from this list.
+  </div>
+
+  <div class="controls">
+    <div></div>
+    <div class="action-buttons">
+      <button class="btn copy" onclick="copyToReminders()">Copy for Apple Reminders</button>
+      <button class="btn" onclick="resetAll()">Reset All</button>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- PRODUCE -->
+    <div class="category">
+      <div class="category-header">
+        <h2>Produce</h2>
+        <span class="category-count">22</span>
+      </div>
+      <div class="items">
+        <div class="item"><input type="checkbox" id="g-blueberries"><div class="item-content"><div class="item-name">Blueberries</div><div class="item-detail">3 pints fresh or 1 large bag frozen · used in 5+ meals</div></div></div>
+        <div class="item"><input type="checkbox" id="g-apples"><div class="item-content"><div class="item-name">Apples</div><div class="item-detail">5 medium</div></div></div>
+        <div class="item"><input type="checkbox" id="g-banana"><div class="item-content"><div class="item-name">Bananas</div><div class="item-detail">2 ripe</div></div></div>
+        <div class="item"><input type="checkbox" id="g-oranges"><div class="item-content"><div class="item-name">Oranges</div><div class="item-detail">2 medium</div></div></div>
+        <div class="item"><input type="checkbox" id="g-lemons"><div class="item-content"><div class="item-name">Lemons</div><div class="item-detail">5</div></div></div>
+        <div class="item"><input type="checkbox" id="g-limes"><div class="item-content"><div class="item-name">Limes</div><div class="item-detail">2</div></div></div>
+        <div class="item"><input type="checkbox" id="g-avocados"><div class="item-content"><div class="item-name">Avocados</div><div class="item-detail">3 ripe · for toast, wrap, and snack</div></div></div>
+        <div class="item"><input type="checkbox" id="g-garlic"><div class="item-content"><div class="item-name">Garlic head</div><div class="item-detail">1 head (for fresh cloves)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-onion-red"><div class="item-content"><div class="item-name">Red onion</div><div class="item-detail">1 medium</div></div></div>
+        <div class="item"><input type="checkbox" id="g-onion-yellow"><div class="item-content"><div class="item-name">Yellow onions</div><div class="item-detail">2 medium</div></div></div>
+        <div class="item"><input type="checkbox" id="g-ginger"><div class="item-content"><div class="item-name">Fresh ginger</div><div class="item-detail">1 small knob (~2 inch)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-tomatoes-cherry"><div class="item-content"><div class="item-name">Cherry tomatoes</div><div class="item-detail">3 pints · used in 5 meals</div></div></div>
+        <div class="item"><input type="checkbox" id="g-tomato"><div class="item-content"><div class="item-name">Regular tomatoes</div><div class="item-detail">2 medium · for wrap and omelette</div></div></div>
+        <div class="item"><input type="checkbox" id="g-cucumber"><div class="item-content"><div class="item-name">Cucumbers</div><div class="item-detail">3 medium</div></div></div>
+        <div class="item"><input type="checkbox" id="g-bell-peppers"><div class="item-content"><div class="item-name">Bell peppers</div><div class="item-detail">3 (any colors)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-carrot"><div class="item-content"><div class="item-name">Carrots</div><div class="item-detail">2 medium · for lentil soup</div></div></div>
+        <div class="item"><input type="checkbox" id="g-celery"><div class="item-content"><div class="item-name">Celery</div><div class="item-detail">1 small bunch · for lentil soup</div></div></div>
+        <div class="item"><input type="checkbox" id="g-broccoli"><div class="item-content"><div class="item-name">Broccoli</div><div class="item-detail">2 large heads</div></div></div>
+        <div class="item"><input type="checkbox" id="g-zucchini"><div class="item-content"><div class="item-name">Zucchini</div><div class="item-detail">3 medium</div></div></div>
+        <div class="item"><input type="checkbox" id="g-green-beans"><div class="item-content"><div class="item-name">Green beans</div><div class="item-detail">¾ lb</div></div></div>
+        <div class="item"><input type="checkbox" id="g-sweet-potato"><div class="item-content"><div class="item-name">Sweet potatoes</div><div class="item-detail">1 large</div></div></div>
+        <div class="item"><input type="checkbox" id="g-cauliflower"><div class="item-content"><div class="item-name">Cauliflower</div><div class="item-detail">2 heads (or 1 head + 1 bag frozen riced)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-spinach"><div class="item-content"><div class="item-name">Fresh spinach</div><div class="item-detail">1 large bag (10 oz)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-greens"><div class="item-content"><div class="item-name">Mixed greens</div><div class="item-detail">1 large bag (5 oz)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-basil"><div class="item-content"><div class="item-name">Fresh basil</div><div class="item-detail">1 bunch or clamshell</div></div></div>
+        <div class="item"><input type="checkbox" id="g-parsley"><div class="item-content"><div class="item-name">Fresh parsley</div><div class="item-detail">1 bunch</div></div></div>
+        <div class="item optional"><input type="checkbox" id="g-arugula"><div class="item-content"><div class="item-name">Arugula</div><div class="item-detail">small bag · for salmon bowl</div></div></div>
+        <div class="item optional"><input type="checkbox" id="g-dill"><div class="item-content"><div class="item-name">Fresh dill</div><div class="item-detail">1 bunch · or use your dried dill weed</div></div></div>
+      </div>
+    </div>
+
+    <!-- PROTEINS -->
+    <div class="category">
+      <div class="category-header">
+        <h2>Proteins</h2>
+        <span class="category-count">5</span>
+      </div>
+      <div class="items">
+        <div class="item"><input type="checkbox" id="g-salmon"><div class="item-content"><div class="item-name">Salmon fillets</div><div class="item-detail">6 fillets (~2.25 lbs) · 3 meals (2 dinners, 1 lunch)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-cod"><div class="item-content"><div class="item-name">Cod fillets</div><div class="item-detail">4 fillets (~1.5 lbs) · 2 dinners</div></div></div>
+        <div class="item"><input type="checkbox" id="g-chicken-breast"><div class="item-content"><div class="item-name">Chicken breasts</div><div class="item-detail">8 breasts (~3 lbs) · 4 meals</div></div></div>
+        <div class="item"><input type="checkbox" id="g-chicken-thighs"><div class="item-content"><div class="item-name">Chicken thighs</div><div class="item-detail">4 thighs · bone-in or boneless</div></div></div>
+        <div class="item"><input type="checkbox" id="g-ground-turkey"><div class="item-content"><div class="item-name">Ground turkey</div><div class="item-detail">½ lb · 93% lean</div></div></div>
+      </div>
+    </div>
+
+    <!-- DAIRY -->
+    <div class="category">
+      <div class="category-header">
+        <h2>Dairy & Refrigerated</h2>
+        <span class="category-count">4</span>
+      </div>
+      <div class="items">
+        <div class="item"><input type="checkbox" id="g-greek-yogurt"><div class="item-content"><div class="item-name">Plain Greek yogurt</div><div class="item-detail">1 large (32 oz) tub · full-fat or 2%</div></div></div>
+        <div class="item"><input type="checkbox" id="g-mozz"><div class="item-content"><div class="item-name">Fresh mozzarella</div><div class="item-detail">1 ball, part-skim (~8 oz)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-almond-milk"><div class="item-content"><div class="item-name">Unsweetened almond milk</div><div class="item-detail">1 carton · for overnight oats &amp; oatmeals</div></div></div>
+        <div class="item optional"><input type="checkbox" id="g-feta"><div class="item-content"><div class="item-name">Feta cheese</div><div class="item-detail">4 oz block · for Mediterranean bowl</div></div></div>
+      </div>
+    </div>
+
+    <!-- GRAINS & PANTRY -->
+    <div class="category">
+      <div class="category-header">
+        <h2>Grains & Pantry</h2>
+        <span class="category-count">7</span>
+      </div>
+      <div class="items">
+        <div class="item"><input type="checkbox" id="g-oats"><div class="item-content"><div class="item-name">Rolled oats</div><div class="item-detail">1 large container (18 oz+)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-quinoa"><div class="item-content"><div class="item-name">Quinoa</div><div class="item-detail">1 bag (16 oz) · used in 4 meals</div></div></div>
+        <div class="item"><input type="checkbox" id="g-brown-rice"><div class="item-content"><div class="item-name">Brown rice</div><div class="item-detail">1 bag (1–2 lb)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-pasta"><div class="item-content"><div class="item-name">Whole wheat pasta</div><div class="item-detail">1 box (8–12 oz) · penne or spaghetti</div></div></div>
+        <div class="item"><input type="checkbox" id="g-tortillas"><div class="item-content"><div class="item-name">Whole wheat tortillas</div><div class="item-detail">1 pack (large size)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-bread"><div class="item-content"><div class="item-name">Whole grain bread</div><div class="item-detail">1 loaf</div></div></div>
+        <div class="item"><input type="checkbox" id="g-lentils"><div class="item-content"><div class="item-name">Dry lentils</div><div class="item-detail">1 bag · green or brown</div></div></div>
+      </div>
+    </div>
+
+    <!-- CANNED & JARRED -->
+    <div class="category">
+      <div class="category-header">
+        <h2>Canned & Jarred</h2>
+        <span class="category-count">5</span>
+      </div>
+      <div class="items">
+        <div class="item"><input type="checkbox" id="g-chickpeas"><div class="item-content"><div class="item-name">Chickpeas</div><div class="item-detail">2 cans (15 oz each)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-crushed-tomatoes"><div class="item-content"><div class="item-name">Crushed tomatoes</div><div class="item-detail">1 can (28 oz) · no salt added · for pasta sauce</div></div></div>
+        <div class="item"><input type="checkbox" id="g-chicken-broth"><div class="item-content"><div class="item-name">Low-sodium chicken broth</div><div class="item-detail">32 oz carton · for quinoa</div></div></div>
+        <div class="item"><input type="checkbox" id="g-veg-broth"><div class="item-content"><div class="item-name">Low-sodium vegetable broth</div><div class="item-detail">32 oz carton · for lentil soup</div></div></div>
+        <div class="item"><input type="checkbox" id="g-hummus"><div class="item-content"><div class="item-name">Hummus</div><div class="item-detail">1 tub · low-sodium, olive oil based</div></div></div>
+      </div>
+    </div>
+
+    <!-- NUTS & SEEDS -->
+    <div class="category">
+      <div class="category-header">
+        <h2>Nuts & Seeds</h2>
+        <span class="category-count">5</span>
+      </div>
+      <div class="items">
+        <div class="item"><input type="checkbox" id="g-walnuts"><div class="item-content"><div class="item-name">Walnuts</div><div class="item-detail">1 bag (6–8 oz)</div></div></div>
+        <div class="item"><input type="checkbox" id="g-almonds"><div class="item-content"><div class="item-name">Almonds</div><div class="item-detail">1 bag (12 oz) · raw or dry roasted</div></div></div>
+        <div class="item"><input type="checkbox" id="g-cashews"><div class="item-content"><div class="item-name">Cashews</div><div class="item-detail">1 bag (8 oz) · unsalted</div></div></div>
+        <div class="item"><input type="checkbox" id="g-flax"><div class="item-content"><div class="item-name">Ground flaxseeds</div><div class="item-detail">1 bag · refrigerate after opening</div></div></div>
+        <div class="item"><input type="checkbox" id="g-chia"><div class="item-content"><div class="item-name">Chia seeds</div><div class="item-detail">1 small bag · for overnight oats &amp; parfaits</div></div></div>
+      </div>
+    </div>
+
+    <!-- CONDIMENTS & SPECIAL -->
+    <div class="category">
+      <div class="category-header">
+        <h2>Condiments & Special</h2>
+        <span class="category-count">3</span>
+      </div>
+      <div class="items">
+        <div class="item"><input type="checkbox" id="g-balsamic"><div class="item-content"><div class="item-name">Balsamic vinegar</div><div class="item-detail">small bottle</div></div></div>
+        <div class="item"><input type="checkbox" id="g-honey"><div class="item-content"><div class="item-name">Honey</div><div class="item-detail">small jar · for oatmeal drizzle</div></div></div>
+        <div class="item optional"><input type="checkbox" id="g-natural-pb"><div class="item-content"><div class="item-name">Natural peanut butter</div><div class="item-detail">no added sugar · better than Skippy for prediabetes</div></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    <p>Tap items as you shop · use "Copy for Apple Reminders" to paste straight into your list app</p>
+    <span class="updated">Week 1 · Mon–Sun · May 13, 2026</span>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Copied to clipboard — paste into Reminders</div>
+
+<script>
+  const STORAGE_KEY = 'grocery_week1_state';
+
+  function loadState(){
+    try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{};}catch{return{};}
+  }
+  function saveState(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}
+
+  function updateCounts(){
+    const items = document.querySelectorAll('.item');
+    const total = items.length;
+    const bought = document.querySelectorAll('.item input[type="checkbox"]:checked').length;
+    const remaining = total - bought;
+    const pct = total > 0 ? Math.round((bought/total)*100) : 0;
+
+    document.getElementById('total-count').textContent = total;
+    document.getElementById('bought-count').textContent = bought;
+    document.getElementById('remaining-count').textContent = remaining;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = pct + '% complete';
+  }
+
+  function init(){
+    const state = loadState();
+    document.querySelectorAll('.item input[type="checkbox"]').forEach(cb=>{
+      if(state[cb.id]){
+        cb.checked = true;
+        cb.closest('.item').classList.add('checked');
+      }
+      cb.addEventListener('change',()=>{
+        const item = cb.closest('.item');
+        item.classList.toggle('checked',cb.checked);
+        const s = loadState();
+        if(cb.checked) s[cb.id]=true;
+        else delete s[cb.id];
+        saveState(s);
+        updateCounts();
+      });
+    });
+    updateCounts();
+  }
+
+  function resetAll(){
+    if(!confirm('Reset all items?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll('.item input[type="checkbox"]').forEach(cb=>{
+      cb.checked = false;
+      cb.closest('.item').classList.remove('checked');
+    });
+    updateCounts();
+  }
+
+  function copyToReminders(){
+    const lines = [];
+    document.querySelectorAll('.category').forEach(cat=>{
+      const catName = cat.querySelector('.category-header h2').textContent;
+      lines.push(catName.toUpperCase());
+      cat.querySelectorAll('.item').forEach(item=>{
+        if(item.querySelector('input').checked) return;
+        const name = item.querySelector('.item-name').textContent.trim();
+        const detail = item.querySelector('.item-detail').textContent.trim();
+        lines.push(name + ' — ' + detail);
+      });
+      lines.push('');
+    });
+    const text = lines.join('\n').trim();
+
+    navigator.clipboard.writeText(text).then(()=>{
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'),2500);
+    }).catch(()=>{
+      alert('Copy failed. Long-press to select and copy manually.');
+    });
+  }
+
+  init();
+</script>
+
+</body>
+</html>
